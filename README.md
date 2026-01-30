@@ -16,6 +16,10 @@ This hackathon project helps patients understand their health by:
 3. **Generating explanations** using Claude AI in plain language
 4. **Creating educational videos** with Wan 2.2 text-to-video AI
 
+![Select Patient and Generate](image.png)
+
+![Generated Text + Video](image-1.png)
+
 ## 🚀 Quick Start
 
 ### Prerequisites
