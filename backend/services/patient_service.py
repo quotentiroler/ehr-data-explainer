@@ -30,17 +30,16 @@ class PatientQueryService:
         """
         query = """
         MATCH (p:Patient {id: $patient_id})
-        OPTIONAL MATCH (p)-[hc:HAS_CONDITION]->(c:Condition)
+        OPTIONAL MATCH (p)-[:HAS_CONDITION]->(c:Condition)
         OPTIONAL MATCH (c)-[:AFFECTS]->(bs:BodySystem)
         OPTIONAL MATCH (p)-[:TAKES_MEDICATION]->(m:Medication)
         OPTIONAL MATCH (m)-[:TREATS]->(tc:Condition)
-        OPTIONAL MATCH (c)-[:RELATED_TO]->(rc:Condition)
         
         RETURN p.name as patient_name,
                collect(DISTINCT {
                    code: c.code, 
                    display: c.display, 
-                   onset: hc.onsetDate
+                   onset: c.onsetDate
                }) as conditions,
                collect(DISTINCT {
                    code: m.code, 
@@ -50,11 +49,7 @@ class PatientQueryService:
                collect(DISTINCT {
                    system: bs.name,
                    description: bs.description
-               }) as body_systems,
-               collect(DISTINCT {
-                   condition: c.display,
-                   related_to: rc.display
-               }) as relationships
+               }) as body_systems
         """
         
         with self.driver.session() as session:
@@ -69,7 +64,7 @@ class PatientQueryService:
                 conditions=[c for c in result["conditions"] if c.get("code")],
                 medications=[m for m in result["medications"] if m.get("code")],
                 body_systems_affected=[bs for bs in result["body_systems"] if bs.get("system")],
-                condition_relationships=[r for r in result["relationships"] if r.get("related_to")]
+                condition_relationships=[]
             )
     
     def get_all_patients(self, limit: int = 50) -> list[dict]:

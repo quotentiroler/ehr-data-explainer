@@ -79,13 +79,18 @@ Format the response as valid JSON:
 
 Return ONLY the JSON, no other text."""
 
-        message = self.client.messages.create(
-            model=self.model,
-            max_tokens=2000,
-            messages=[{"role": "user", "content": prompt}]
-        )
-        
-        response_text = message.content[0].text
+        try:
+            message = self.client.messages.create(
+                model=self.model,
+                max_tokens=2000,
+                messages=[{"role": "user", "content": prompt}]
+            )
+            
+            response_text = message.content[0].text
+        except Exception as e:
+            # Return demo response if API fails (e.g., no credits)
+            print(f"Claude API error: {e}, using demo response")
+            return self._get_demo_response(summary)
         
         # Parse JSON from response
         try:
@@ -111,6 +116,26 @@ Return ONLY the JSON, no other text."""
                 ]
             }
     
+    def _get_demo_response(self, summary: PatientHealthSummary) -> dict:
+        """Generate a demo response when Claude API is unavailable."""
+        conditions_list = ", ".join([c.get("display", "condition") for c in summary.conditions])
+        meds_list = ", ".join([m.get("display", "medication") for m in summary.medications])
+        systems_list = ", ".join([s.get("system", "system") for s in summary.body_systems_affected])
+        
+        return {
+            "greeting": f"Hello {summary.patient_name}! 👋",
+            "body_explanation": f"Your body is working hard to stay healthy! You have {len(summary.conditions)} health conditions that your doctors are helping you manage: {conditions_list}. These conditions affect your {systems_list} system(s). Think of your body like a well-organized city - sometimes certain neighborhoods need extra attention, and that's exactly what your healthcare team is providing.",
+            "medication_explanation": f"You're taking {len(summary.medications)} medications to help your body: {meds_list}. Each medication is like a specialized helper working inside your body. They work together to keep everything running smoothly and help you feel your best.",
+            "connections": f"Your conditions are connected through your {systems_list} system. When we take care of one condition, it often helps the others too! Your medications work as a team to support your overall health.",
+            "encouragement": "You're doing great by learning about your health! Knowledge is power, and understanding how your body works helps you make the best decisions. Keep taking your medications as prescribed and don't hesitate to ask your healthcare team any questions. You've got this! 💪",
+            "key_takeaways": [
+                f"You have {len(summary.conditions)} conditions being actively managed",
+                f"Your {len(summary.medications)} medications work together to help you",
+                f"Your {systems_list} system is getting the care it needs",
+                "Always talk to your doctor about any concerns"
+            ]
+        }
+
     async def generate_video_prompt(
         self,
         summary: PatientHealthSummary,

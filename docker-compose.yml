@@ -37,7 +37,7 @@ services:
       - NEO4J_USER=neo4j
       - NEO4J_PASSWORD=healthgraph123
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-      - HUGGINGFACE_API_KEY=${HUGGINGFACE_API_KEY}
+      - HF_TOKEN=${HF_TOKEN}
       - CLAUDE_MODEL=claude-sonnet-4-20250514
       - VIDEO_GENERATION_ENABLED=true
     volumes:

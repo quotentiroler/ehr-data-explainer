@@ -80,9 +80,9 @@ app.add_middleware(
 )
 
 # Static files for videos
-static_dir = Path(__file__).parent.parent / "static"
+static_dir = Path(__file__).parent / "static"
 static_dir.mkdir(exist_ok=True)
-videos_dir = Path(__file__).parent.parent / "generated_videos"
+videos_dir = Path(__file__).parent / "generated_videos"
 videos_dir.mkdir(exist_ok=True)
 
 app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
@@ -200,19 +200,16 @@ async def explain_health(request: ExplainRequest):
         except Exception as e:
             print(f"Warning: Failed to generate video prompt: {e}")
         
-        # Generate video (with fallback to templates)
+        # Generate video with Wan 2.2
         if video_prompt:
             try:
+                print(f"🎬 Starting video generation...")
                 result = await video_service.generate_video(video_prompt, request.patient_id)
                 video_url = f"/videos/{Path(result['video_path']).name}"
+                print(f"✅ Video ready: {video_url}")
             except Exception as e:
-                print(f"Warning: Video generation failed, using template: {e}")
-                # Fallback to template
-                template = video_service.get_template_for_condition(
-                    summary.conditions[0].get("code", "")
-                )
-                if template:
-                    video_url = template["video_url"]
+                print(f"❌ Video generation failed: {e}")
+                video_url = None
     
     return ExplainResponse(
         patient_name=summary.patient_name,
