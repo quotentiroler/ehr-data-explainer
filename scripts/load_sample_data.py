@@ -292,7 +292,7 @@ async def load_data_to_neo4j():
         return
     
     # Create loader and load bundles
-    loader = FHIRToNeo4jLoader(driver)
+    loader = FHIRToNeo4jLoader(neo4j_uri, neo4j_user, neo4j_password)
     
     # Find FHIR bundle files
     bundle_files = list(SAMPLE_DIR.glob("*.json"))

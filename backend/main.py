@@ -15,10 +15,10 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from neo4j import GraphDatabase
 
-from .config import get_settings
-from .services.patient_service import PatientQueryService
-from .services.explanation_service import ExplanationService
-from .services.video_service import VideoGenerationService
+from config import get_settings
+from services.patient_service import PatientQueryService
+from services.explanation_service import ExplanationService
+from services.video_service import VideoGenerationService
 
 settings = get_settings()
 

@@ -1,6 +1,6 @@
 # 🏥 EHR Data Explainer
 
-> Transform complex EHR data into visual health explanations using Neo4j, Claude AI, and Wan 2.2 video generation.
+> Transform complex, medical data into visual health explanations using Neo4j, Claude AI, and Wan 2.2 video generation.
 
 ![Architecture](https://img.shields.io/badge/Architecture-Neo4j%20%2B%20Claude%20%2B%20Wan%202.2-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
@@ -11,7 +11,7 @@
 
 This hackathon project helps patients understand their health by:
 
-1. **Loading FHIR data** into a Neo4j graph database
+1. **Loading EHR data** into a Neo4j graph database
 2. **Visualizing connections** between conditions, medications, and body systems
 3. **Generating explanations** using Claude AI in plain language
 4. **Creating educational videos** with Wan 2.2 text-to-video AI
